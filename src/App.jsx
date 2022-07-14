@@ -1,43 +1,47 @@
-import React from 'react';
-
+import React, { Component } from 'react'
 import Footer from './components/Footer/Footer';
 import NewTaskForm from './components/NewTaskForm/NewTaskForm';
 import TaskList from './components/TaskList/TaskList';
 import './index.css';
 
+const listItems = [
+  { status: 'completed', descr: 'Completed task', create: 'created 17 seconds ago', edit: false, id: 1 },
+  { status: 'editing', descr: 'Editing task', create: 'created 5 minutes ago', edit: true, id: 2 },
+  { status: null, descr: 'Active task', create: 'created 5 minutes ago', edit: false, id: 3 },
+]
 
-function App() {
+export class App extends Component {
 
-  const listItems = [
-    { status: 'completed', descr: 'Completed task', create: 'created 17 seconds ago', edit: false, id: 1 },
-    { status: 'editing', descr: 'Editing task', create: 'created 5 minutes ago', edit: true, id: 2 },
-    { status: null, descr: 'Active task', create: 'created 5 minutes ago', edit: false, id: 3 },
-  ]
-
-  const [items, setitems] = React.useState(listItems)
-
-  const onDeleteItem = (e) => {
-    const id = e.target.closest('li').dataset.id;
-
-    setitems(items => items.filter(item => item.id != id))
+  state = {
+    items: listItems
   }
 
+  onDeleteItem = (e) => {
+    const id = e.target.closest('li').dataset.id;
 
+    this.setState(({items}) => {
+      return {
+        items: items.filter(item => item.id != id)
+      }
+    })
+  }
 
-  return (
-    <div className="App">
-      <section className="todoapp">
-        <header className="header">
-          <h1>todos</h1>
-          <NewTaskForm />
-        </header>
-        <section className="main">
-          <TaskList items={items} setitems={setitems} onDeleteItem={onDeleteItem}/>
-          <Footer />
+  render() {
+    return (
+      <div className="App">
+        <section className="todoapp">
+          <header className="header">
+            <h1>todos</h1>
+            <NewTaskForm />
+          </header>
+          <section className="main">
+            <TaskList items={this.state.items} onDeleteItem={this.onDeleteItem} />
+            <Footer />
+          </section>
         </section>
-      </section>
-    </div>
-  );
+      </div>
+    );
+  }
 }
 
-export default App;
+export default App

@@ -2,17 +2,26 @@ import React, { Component } from 'react'
 
 export class Task extends Component {
 
-  activeHandler = e => e.target.closest('li').classList.toggle('completed');
+  state = {
+    status: null
+  }
+
+  // activeHandler = e => e.target.closest('li').classList.toggle('completed');
 
 
   render() {
-    const { status, descr, create, edit, id, onDeleteItem } = this.props
+    const { descr, create, edit, id, onDeleteItem } = this.props;
+    const {status} = this.state;
 
     return (
       <li className={status} data-id={id} >
         <div className="view">
           <input className="toggle" type="checkbox" />
-          <label onClick={(e) => this.setState(this.activeHandler(e))}>
+          <label onClick={(e) => this.setState(({status}) => {
+            return {
+              status: status ? null : 'completed'
+            }
+          })}>
             <span className="description">{descr}</span>
             <span className="created">{create}</span>
           </label>

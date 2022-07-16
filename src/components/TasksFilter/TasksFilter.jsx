@@ -2,16 +2,19 @@ import React, { Component } from 'react'
 
 export class TasksFilter extends Component {
   render() {
+
+    const { onTabClick, tabAll, tabActive, tabCompleted } = this.props;
+
     return (
       <ul className="filters">
         <li>
-          <button className="selected">All</button>
+          <button className={tabAll ? 'selected' : null} onClick={onTabClick}>All</button>
         </li>
         <li>
-          <button>Active</button>
+          <button className={tabActive ? 'selected' : null} onClick={onTabClick}>Active</button>
         </li>
         <li>
-          <button>Completed</button>
+          <button className={tabCompleted ? 'selected' : null} onClick={onTabClick}>Completed</button>
         </li>
       </ul>
     )

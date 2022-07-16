@@ -4,15 +4,19 @@ import Task from '../Task/Task'
 export class TaskList extends Component {
   render() {
 
-    const { items, onDeleteItem } = this.props
+    const { items, onDeleteItem, onComplete, tabAll, tabActive, tabCompleted } = this.props
 
-    const itemsData = items.map((item) => {
-      return <Task status={item.status} descr={item.descr} create={item.create} edit={item.edit} key={item.id} id={item.id} onDeleteItem={onDeleteItem} />
-    })
+    const itemRender = (items) => {
+      const itemData = items.map(({ status, descr, create, edit, id, }) => {
+        return <Task statusItem={status} descr={descr} create={create} edit={edit} key={id} id={id} onDeleteItem={onDeleteItem} onComplete={onComplete} />
+      })
+      return itemData
+    }
+
 
     return (
       <ul className="todo-list">
-        {itemsData}
+        {tabAll ? itemRender(items) : tabActive ? itemRender(items.filter(el => el.status === true)) : tabCompleted ? itemRender(items.filter(el => el.status === false)) : itemRender(items)}
       </ul>
     )
   }

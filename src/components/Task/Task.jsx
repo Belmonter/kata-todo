@@ -6,22 +6,15 @@ export class Task extends Component {
     status: null
   }
 
-  // activeHandler = e => e.target.closest('li').classList.toggle('completed');
-
 
   render() {
-    const { descr, create, edit, id, onDeleteItem } = this.props;
-    const {status} = this.state;
+    const { statusItem, descr, create, edit, id, onDeleteItem, onComplete} = this.props;
 
     return (
-      <li className={status} data-id={id} >
+      <li className={!statusItem ? 'completed' : null} data-id={id} >
         <div className="view">
           <input className="toggle" type="checkbox" />
-          <label onClick={(e) => this.setState(({status}) => {
-            return {
-              status: status ? null : 'completed'
-            }
-          })}>
+          <label onClick={() => onComplete(id)}>
             <span className="description">{descr}</span>
             <span className="created">{create}</span>
           </label>

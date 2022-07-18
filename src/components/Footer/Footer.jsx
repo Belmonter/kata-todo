@@ -1,9 +1,29 @@
 
 import React, { Component } from 'react'
 import TasksFilter from '../TasksFilter/TasksFilter'
+import PropTypes from 'prop-types'
 
 
 export class Footer extends Component {
+
+  static defaultProps = {
+    counter: 0,
+    onTabClick: () => {},
+    tabAll: false,
+    tabActive: false,
+    tabCompleted: false,
+    onClear: () => {}
+  }
+
+  static propTypes ={
+    counter: PropTypes.number,
+    onTabClick: PropTypes.func,
+    tabAll: PropTypes.bool,
+    tabActive: PropTypes.bool,
+    tabCompleted: PropTypes.bool,
+    onClear: PropTypes.func,
+  }
+
   render() {
 
     const { counter, onTabClick, tabAll, tabActive, tabCompleted, onClear } = this.props;
@@ -17,5 +37,6 @@ export class Footer extends Component {
     )
   }
 }
+
 
 export default Footer

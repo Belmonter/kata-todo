@@ -1,28 +1,31 @@
 
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 export class NewTaskForm extends Component {
 
-  state = {
-    inpValue: ''
+  static defaultProps = {
+    addItem: () => { },
+    newItemInput: '',
+    onNewTaskChange: () => { }
   }
 
-  onInpChange = (e) => {
-    this.setState({
-      inpValue: e.target.value
-    })
+  static propTypes = {
+    addItem: PropTypes.func,
+    newItemInput: PropTypes.string,
+    onNewTaskChange: PropTypes.func
   }
+
 
   render() {
 
-    const { addItem } = this.props;
-    const { inpValue } = this.state;
+    const { addItem, newItemInput, onNewTaskChange } = this.props;
 
     return (
       <form onSubmit={addItem}>
         <input className="new-todo" placeholder="What needs to be done?" autoFocus
-          value={inpValue}
-          onChange={this.onInpChange}
+          value={newItemInput}
+          onChange={onNewTaskChange}
         />
       </form>
     )

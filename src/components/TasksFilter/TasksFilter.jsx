@@ -1,6 +1,22 @@
 import React, { Component } from 'react'
+import Proptypes from 'prop-types'
 
 export class TasksFilter extends Component {
+
+  static defaultProps = {
+    onTabClick: () => {},
+    tabAll: true,
+    tabActive: false,
+    tabCompleted: false,
+  }
+
+  static propTypes = {
+    onTabClick: Proptypes.func,
+    tabAll: Proptypes.bool,
+    tabActive: Proptypes.bool,
+    tabCompleted: Proptypes.bool,
+  }
+
   render() {
 
     const { onTabClick, tabAll, tabActive, tabCompleted } = this.props;

@@ -1,8 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 
-export class Task extends Component {
-
+class Task extends Component {
   static defaultProps = {
     statusItem: null,
     descr: 'default Text',
@@ -10,12 +9,12 @@ export class Task extends Component {
     edit: false,
     id: 0,
     editItemInput: '',
-    onDeleteItem: () => { },
-    onComplete: () => { },
-    onEdit: () => { },
+    onDeleteItem: () => {},
+    onComplete: () => {},
+    onEdit: () => {},
     onEditChange: () => {},
     onSubmitEdit: () => {},
-  }
+  };
 
   static propTypes = {
     statusItem: PropTypes.bool,
@@ -29,14 +28,13 @@ export class Task extends Component {
     onEditChange: PropTypes.func,
     onSubmitEdit: PropTypes.func,
     editItemInput: PropTypes.string,
-  }
-
+  };
 
   render() {
     const { statusItem, descr, create, edit, id, onDeleteItem, onComplete, onEdit, onSubmitEdit, editItemInput, onEditChange } = this.props;
 
     return (
-      <li className={edit ? 'editing' : !statusItem ? 'completed' : null} data-id={id} >
+      <li className={edit ? 'editing' : !statusItem ? 'completed' : null} data-id={id}>
         <div className="view">
           <input className="toggle" type="checkbox" />
           <label onClick={() => onComplete(id)}>
@@ -46,17 +44,14 @@ export class Task extends Component {
           <button className="icon icon-edit" onClick={() => onEdit(id)}></button>
           <button className="icon icon-destroy" onClick={() => onDeleteItem(id)}></button>
         </div>
-        {edit && 
+        {edit && (
           <form onSubmit={(e) => onSubmitEdit(e, id)}>
-            <input type="text" className="edit" placeholder='Edit your task' autoFocus
-              value={editItemInput}
-              onChange={onEditChange}
-            />
+            <input type="text" className="edit" placeholder="Edit your task" autoFocus value={editItemInput} onChange={onEditChange} />
           </form>
-        }
+        )}
       </li>
-    )
+    );
   }
 }
 
-export default Task
+export default Task;

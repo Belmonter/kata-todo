@@ -1,13 +1,12 @@
-import React, { Component } from 'react'
+import { Component } from 'react';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+
 import Footer from './components/Footer/Footer';
 import NewTaskForm from './components/NewTaskForm/NewTaskForm';
 import TaskList from './components/TaskList/TaskList';
 import './index.css';
 
-import formatDistanceToNow from 'date-fns/formatDistanceToNow'
-
-export class App extends Component {
-
+class App extends Component {
   state = {
     items: [],
     counter: 0,
@@ -16,7 +15,7 @@ export class App extends Component {
     tabCompleted: false,
     newItemInput: '',
     editItemInput: '',
-  }
+  };
 
   componentDidMount() {
     this.dateTimer = setInterval(() => this.updateTimeDistance(), 5000);
@@ -29,76 +28,79 @@ export class App extends Component {
   onDeleteItem = (id) => {
     this.setState(({ items }) => {
       return {
-        items: items.filter(item => item.id !== id),
-        counter: items.filter(el => el.status === true).length,
-      }
-    })
-  }
+        items: items.filter((item) => item.id !== id),
+        counter: items.filter((el) => el.status === true).length,
+      };
+    });
+  };
 
   onComplete = (id) => {
     this.setState(({ items }) => {
       const newArray = [...items];
-      const index = newArray.findIndex((el) => el.id === id)
-      newArray[index] = { ...newArray[index], status: !newArray[index].status }
+      const index = newArray.findIndex((el) => el.id === id);
+      newArray[index] = { ...newArray[index], status: !newArray[index].status };
       return {
         items: newArray,
-        counter: newArray.filter(el => el.status === true).length,
-      }
-    })
-  }
+        counter: newArray.filter((el) => el.status === true).length,
+      };
+    });
+  };
 
   onClear = () => {
     this.setState(({ items }) => {
       return {
-        items: items.filter(el => el.status !== false)
-      }
-    })
-  }
+        items: items.filter((el) => el.status !== false),
+      };
+    });
+  };
 
   onNewTaskChange = (e) => {
     this.setState({
-      newItemInput: e.target.value
-    })
-  }
+      newItemInput: e.target.value,
+    });
+  };
 
   getTimeDistance = (createDate) => {
-    let result = formatDistanceToNow(
-      createDate,
-      { includeSeconds: true }
-    )
-    return result
-  }
+    let result = formatDistanceToNow(createDate, { includeSeconds: true });
+    return result;
+  };
 
   updateTimeDistance = () => {
     this.setState(({ items }) => {
       if (items.length) {
         let newArray = [...items];
         newArray.forEach((el) => {
-          el.create = `created ${this.getTimeDistance(el.createDate)} ago`
-        })
+          el.create = `created ${this.getTimeDistance(el.createDate)} ago`;
+        });
         return {
           items: newArray,
-        }
+        };
       }
-    })
-  }
+    });
+  };
 
   addNewItem = (e) => {
     e.preventDefault();
     const text = this.state.newItemInput;
     if (text) {
       this.setState(({ items }) => {
-        const newItem = { status: true, descr: text, create: `created ${this.getTimeDistance(new Date())} ago`, edit: false, id: items.length + 1, createDate: new Date() }
+        const newItem = {
+          status: true,
+          descr: text,
+          create: `created ${this.getTimeDistance(new Date())} ago`,
+          edit: false,
+          id: items.length + 1,
+          createDate: new Date(),
+        };
         const newData = [...items, newItem];
         return {
           items: newData,
-          counter: newData.filter(el => el.status === true).length,
-          newItemInput: ''
-        }
+          counter: newData.filter((el) => el.status === true).length,
+          newItemInput: '',
+        };
       });
-
     }
-  }
+  };
 
   onTabClick = (e) => {
     const target = e.target;
@@ -107,61 +109,59 @@ export class App extends Component {
         return {
           tabAll: !tabAll,
           tabActive: false,
-          tabCompleted: false
-        }
-      })
+          tabCompleted: false,
+        };
+      });
     } else if (target.textContent === 'Active') {
       this.setState(({ tabActive }) => {
         return {
           tabAll: false,
           tabActive: !tabActive,
-          tabCompleted: false
-        }
-      })
+          tabCompleted: false,
+        };
+      });
     } else if (target.textContent === 'Completed') {
       this.setState(({ tabCompleted }) => {
         return {
           tabAll: false,
           tabActive: false,
-          tabCompleted: !tabCompleted
-        }
-      })
+          tabCompleted: !tabCompleted,
+        };
+      });
     }
-  }
+  };
 
   onEdit = (id) => {
     this.setState(({ items }) => {
       const newArray = [...items];
-      const index = items.findIndex(el => el.id === id);
+      const index = items.findIndex((el) => el.id === id);
       newArray[index] = { ...newArray[index], edit: !newArray[index].edit };
       return {
-        items: newArray
-      }
-    })
-  }
+        items: newArray,
+      };
+    });
+  };
 
   onEditChange = (e) => {
     this.setState({
-      editItemInput: e.target.value
-    })
-  }
+      editItemInput: e.target.value,
+    });
+  };
 
   onSubmitEdit = (e, id) => {
     e.preventDefault();
     this.setState(({ items, editItemInput }) => {
       const newArray = [...items];
-      const index = items.findIndex(el => el.id === id);
-      newArray[index] = { ...newArray[index], descr: editItemInput, edit: !newArray[index].edit }
+      const index = items.findIndex((el) => el.id === id);
+      newArray[index] = { ...newArray[index], descr: editItemInput, edit: !newArray[index].edit };
       return {
         items: newArray,
         editItemInput: '',
-      }
-    })
-  }
-
+      };
+    });
+  };
 
   render() {
-
     const { items, counter, tabAll, tabActive, tabCompleted, newItemInput, editItemInput } = this.state;
 
     return (
@@ -172,7 +172,18 @@ export class App extends Component {
             <NewTaskForm addItem={this.addNewItem} newItemInput={newItemInput} onNewTaskChange={this.onNewTaskChange} />
           </header>
           <section className="main">
-            <TaskList items={items} onDeleteItem={this.onDeleteItem} onComplete={this.onComplete} tabAll={tabAll} tabActive={tabActive} tabCompleted={tabCompleted} onEdit={this.onEdit} onSubmitEdit={this.onSubmitEdit} editItemInput={editItemInput} onEditChange={this.onEditChange} />
+            <TaskList
+              items={items}
+              onDeleteItem={this.onDeleteItem}
+              onComplete={this.onComplete}
+              tabAll={tabAll}
+              tabActive={tabActive}
+              tabCompleted={tabCompleted}
+              onEdit={this.onEdit}
+              onSubmitEdit={this.onSubmitEdit}
+              editItemInput={editItemInput}
+              onEditChange={this.onEditChange}
+            />
             <Footer counter={counter} onTabClick={this.onTabClick} tabAll={tabAll} tabActive={tabActive} tabCompleted={tabCompleted} onClear={this.onClear} />
           </section>
         </section>
@@ -181,4 +192,4 @@ export class App extends Component {
   }
 }
 
-export default App
+export default App;

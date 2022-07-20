@@ -4,6 +4,12 @@ body {
   padding: 0;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 button {
   margin: 0;
   padding: 0;
@@ -241,6 +247,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 15px 85px 15px 60px;
+  z-index: 2;
 }
 
 .todo-list li .view {
@@ -253,6 +260,7 @@ body {
 }
 
 .todo-list li label .title {
+  cursor: pointer;
   word-break: break-all;
   display: block;
   line-height: 1.2;

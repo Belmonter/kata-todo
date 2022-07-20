@@ -1,5 +1,5 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Component } from 'react';
 
 import Task from '../Task/Task';
 
@@ -31,14 +31,17 @@ class TaskList extends Component {
 	};
 
 	render() {
-		const { items, onDeleteItem, onComplete, tabAll, tabActive, tabCompleted, onEdit, editItemInput, onSubmitEdit, onEditChange } = this.props;
+		const { items, onDeleteItem, onComplete, tabAll, tabActive, tabCompleted, onEdit, editItemInput, onSubmitEdit, onEditChange, onTaskUnmount } =
+			this.props;
 
 		const itemRender = (items) => {
-			const itemData = items.map(({ status, descr, create, edit, id, createDate }) => {
+			const itemData = items.map(({ status, descr, create, edit, id, createDate, min, sec }) => {
 				return (
 					<Task
 						statusItem={status}
 						descr={descr}
+						min={min}
+						sec={sec}
 						create={create}
 						edit={edit}
 						key={id}
@@ -50,23 +53,17 @@ class TaskList extends Component {
 						editItemInput={editItemInput}
 						onSubmitEdit={onSubmitEdit}
 						onEditChange={onEditChange}
+						onTaskUnmount={onTaskUnmount}
+						tabAll={tabAll}
+						tabActive={tabActive}
+						tabCompleted={tabCompleted}
 					/>
 				);
 			});
 			return itemData;
 		};
 
-		return (
-			<ul className="todo-list">
-				{tabAll
-					? itemRender(items)
-					: tabActive
-					? itemRender(items.filter((el) => el.status === true))
-					: tabCompleted
-					? itemRender(items.filter((el) => el.status === false))
-					: itemRender(items)}
-			</ul>
-		);
+		return <ul className="todo-list">{itemRender(items)}</ul>;
 	}
 }
 

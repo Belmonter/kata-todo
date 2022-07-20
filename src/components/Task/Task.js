@@ -1,7 +1,7 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Component } from 'react';
 
-import pause from '../../assets/img/pause.svg'
+import pause from '../../assets/img/pause.svg';
 import play from '../../assets/img/play.svg';
 
 class Task extends Component {
@@ -33,23 +33,84 @@ class Task extends Component {
 		editItemInput: PropTypes.string,
 	};
 
+	state = {
+		min: Number(this.props.min),
+		sec: Number(this.props.sec),
+	};
+
+	componentWillUnmount() {
+		this.props.onTaskUnmount(this.props.id, this.state.min, this.state.sec);
+	}
+
+	onStartTimer = () => {
+		clearInterval(this.timer);
+		this.timer = setInterval(() => {
+			this.setState(({ min, sec }) => {
+				if (min === 0 && sec === 1) {
+					clearInterval(this.timer);
+				}
+				if (sec === 0 && min > 0) {
+					return {
+						min: min - 1,
+						sec: 60,
+					};
+				} else {
+					return {
+						sec: sec - 1,
+					};
+				}
+			});
+		}, 1000);
+	};
+
+	onPauseTimer = () => {
+		clearInterval(this.timer);
+	};
+
 	render() {
-		const { statusItem, descr, create, edit, id, onDeleteItem, onComplete, onEdit, onSubmitEdit, editItemInput, onEditChange } = this.props;
+		const {
+			statusItem,
+			descr,
+			create,
+			edit,
+			id,
+			onDeleteItem,
+			onComplete,
+			onEdit,
+			onSubmitEdit,
+			editItemInput,
+			onEditChange,
+			tabAll,
+			tabActive,
+			tabCompleted,
+		} = this.props;
+
+		const { min, sec } = this.state;
+
+		let tabs = tabAll
+			? { display: 'block' }
+			: tabActive && statusItem
+			? { display: 'block' }
+			: tabCompleted && !statusItem
+			? { display: 'block' }
+			: { display: 'none' };
 
 		return (
-			<li className={edit ? 'editing' : !statusItem ? 'completed' : null} data-id={id}>
+			<li className={edit ? 'editing' : !statusItem ? 'completed' : null} style={tabs} data-id={id}>
 				<div className="view">
 					<input className="toggle" type="checkbox" />
-					<label onClick={() => onComplete(id)}>
-						<span className="title">{descr}</span>
+					<label>
+						<span className="title" onClick={() => onComplete(id)}>
+							{descr}
+						</span>
 						<div className="description flex">
 							<button className="play">
-								<img src={play} alt="play" />
+								<img src={play} alt="play" onClick={this.onStartTimer} />
 							</button>
 							<button className="pause">
-								<img src={pause} alt="pause" />
+								<img src={pause} alt="pause" onClick={this.onPauseTimer} />
 							</button>
-							12:25
+							{min}:{sec}
 						</div>
 						<span className="description">{create}</span>
 					</label>

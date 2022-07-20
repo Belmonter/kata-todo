@@ -1,5 +1,5 @@
-import { Component } from 'react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { Component } from 'react';
 
 import Footer from './components/Footer/Footer';
 import NewTaskForm from './components/NewTaskForm/NewTaskForm';
@@ -15,6 +15,8 @@ class App extends Component {
 		tabCompleted: false,
 		newItemInput: '',
 		editItemInput: '',
+		min: '',
+		sec: '',
 	};
 
 	componentDidMount() {
@@ -82,11 +84,16 @@ class App extends Component {
 	addNewItem = (e) => {
 		e.preventDefault();
 		const text = this.state.newItemInput;
+		const min = this.state.min;
+		const sec = this.state.sec;
+
 		if (text) {
 			this.setState(({ items }) => {
 				const newItem = {
 					status: true,
 					descr: text,
+					min: min,
+					sec: sec,
 					create: `created ${this.getTimeDistance(new Date())} ago`,
 					edit: false,
 					id: items.length + 1,
@@ -97,6 +104,8 @@ class App extends Component {
 					items: newData,
 					counter: newData.filter((el) => el.status === true).length,
 					newItemInput: '',
+					min: '',
+					sec: '',
 				};
 			});
 		}
@@ -161,15 +170,46 @@ class App extends Component {
 		});
 	};
 
+	onMinuteChange = (e) => {
+		this.setState({
+			min: e.target.value,
+		});
+	};
+
+	onSecChange = (e) => {
+		this.setState({
+			sec: e.target.value,
+		});
+	};
+
+	onTaskUnmount = (id, min, sec) => {
+		this.setState(({ items }) => {
+			const newArray = [...items];
+			const index = items.findIndex((el) => el.id === id);
+			newArray[index] = { ...newArray[index], min: min, sec: sec };
+			return {
+				items: newArray,
+			};
+		});
+	};
+
 	render() {
-		const { items, counter, tabAll, tabActive, tabCompleted, newItemInput, editItemInput } = this.state;
+		const { items, counter, tabAll, tabActive, tabCompleted, newItemInput, editItemInput, min, sec } = this.state;
 
 		return (
 			<div className="app">
 				<section className="todoapp">
 					<header className="header">
 						<h1>todos</h1>
-						<NewTaskForm addItem={this.addNewItem} newItemInput={newItemInput} onNewTaskChange={this.onNewTaskChange} />
+						<NewTaskForm
+							addItem={this.addNewItem}
+							newItemInput={newItemInput}
+							onNewTaskChange={this.onNewTaskChange}
+							min={min}
+							sec={sec}
+							onMinuteChange={this.onMinuteChange}
+							onSecChange={this.onSecChange}
+						/>
 					</header>
 					<section className="main">
 						<TaskList
@@ -183,6 +223,7 @@ class App extends Component {
 							onSubmitEdit={this.onSubmitEdit}
 							editItemInput={editItemInput}
 							onEditChange={this.onEditChange}
+							onTaskUnmount={this.onTaskUnmount}
 						/>
 						<Footer
 							counter={counter}

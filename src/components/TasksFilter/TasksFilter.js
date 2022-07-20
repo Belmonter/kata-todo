@@ -1,5 +1,5 @@
-import { Component } from 'react';
 import Proptypes from 'prop-types';
+import { Component } from 'react';
 
 class TasksFilter extends Component {
 	static defaultProps = {

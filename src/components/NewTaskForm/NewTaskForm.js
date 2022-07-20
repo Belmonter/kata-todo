@@ -1,7 +1,7 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Component } from 'react';
 
-import submit from  '../../assets/img/submit.svg'
+import submit from '../../assets/img/submit.svg';
 
 class NewTaskForm extends Component {
 	static defaultProps = {
@@ -17,13 +17,13 @@ class NewTaskForm extends Component {
 	};
 
 	render() {
-		const { addItem, newItemInput, onNewTaskChange } = this.props;
+		const { addItem, newItemInput, onNewTaskChange, min, sec, onMinuteChange, onSecChange } = this.props;
 
 		return (
 			<form onSubmit={addItem} className="new-todo-form">
 				<input className="new-todo" placeholder="Task" autoFocus value={newItemInput} onChange={onNewTaskChange} />
-				<input className="new-todo-form__timer" placeholder="Min" autoFocus />
-				<input className="new-todo-form__timer" placeholder="Sec" autoFocus />
+				<input type="number" className="new-todo-form__timer" value={min} onChange={onMinuteChange} placeholder="Min" autoFocus />
+				<input type="number" className="new-todo-form__timer" value={sec} onChange={onSecChange} placeholder="Sec" autoFocus />
 				<button type="submit" className="new-todo-form__timer">
 					<img src={submit} alt="submit icon" />
 				</button>

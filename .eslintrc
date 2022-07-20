@@ -37,20 +37,26 @@
   ],
   "rules": {
     "indent": [
-      "error",
-      2
+      "warn",
+      "tab"
     ],
-    "prettier/prettier": "error",
+    "no-undef": [
+      "warn"
+    ],
+    "no-unused-vars": [
+      "warn"
+    ],
+    "prettier/prettier": "warn",
     "linebreak-style": [
       0,
       "unix"
     ],
     "quotes": [
-      "error",
+      "warn",
       "single"
     ],
     "semi": [
-      "error",
+      "warn",
       "always"
     ],
     "react/react-in-jsx-scope": "off",

@@ -35,11 +35,12 @@ class TaskList extends Component {
 			this.props;
 
 		const itemRender = (items) => {
-			const itemData = items.map(({ status, descr, create, edit, id, createDate, min, sec }) => {
+			const itemData = items.map(({ status, descr, create, edit, id, createDate, min, sec, checkbox }) => {
 				return (
 					<Task
 						statusItem={status}
 						descr={descr}
+						checkbox={checkbox}
 						min={min}
 						sec={sec}
 						create={create}

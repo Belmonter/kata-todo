@@ -36,6 +36,7 @@ class Task extends Component {
 	state = {
 		min: Number(this.props.min),
 		sec: Number(this.props.sec),
+		check: this.props.checkbox,
 	};
 
 	componentWillUnmount() {
@@ -67,10 +68,19 @@ class Task extends Component {
 		clearInterval(this.timer);
 	};
 
+	onCheckboxChange = () => {
+		this.setState(({ check }) => {
+			return {
+				check: !check,
+			};
+		});
+	};
+
 	render() {
 		const {
 			statusItem,
 			descr,
+			checkbox,
 			create,
 			edit,
 			id,
@@ -85,11 +95,11 @@ class Task extends Component {
 			tabCompleted,
 		} = this.props;
 
-		const { min, sec } = this.state;
+		const { min, sec, check } = this.state;
 
 		let tabs = tabAll
 			? { display: 'block' }
-			: tabActive && statusItem
+			: tabActive && check
 			? { display: 'block' }
 			: tabCompleted && !statusItem
 			? { display: 'block' }
@@ -98,7 +108,7 @@ class Task extends Component {
 		return (
 			<li className={edit ? 'editing' : !statusItem ? 'completed' : null} style={tabs} data-id={id}>
 				<div className="view">
-					<input className="toggle" type="checkbox" />
+					<input className="toggle" type="checkbox" checked={check} onChange={this.onCheckboxChange} />
 					<label>
 						<span className="title" onClick={() => onComplete(id)}>
 							{descr}

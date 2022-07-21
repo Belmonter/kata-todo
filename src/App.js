@@ -91,6 +91,7 @@ class App extends Component {
 			this.setState(({ items }) => {
 				const newItem = {
 					status: true,
+					checkbox: false,
 					descr: text,
 					min: min,
 					sec: sec,

@@ -1,44 +1,50 @@
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import { Component } from 'react';
+import React from 'react';
 
 import Footer from './components/Footer/Footer';
 import NewTaskForm from './components/NewTaskForm/NewTaskForm';
 import TaskList from './components/TaskList/TaskList';
 import './index.css';
 
-class App extends Component {
-	state = {
+const App = () => {
+	const [items, setitems] = React.useState({
 		items: [],
 		counter: 0,
+	});
+	const [tabs, setTabs] = React.useState({
 		tabAll: true,
 		tabActive: false,
 		tabCompleted: false,
-		newItemInput: '',
-		editItemInput: '',
-		min: '',
-		sec: '',
-	};
+	});
+	const [newItemInput, setNewItemInput] = React.useState('');
+	const [editItemInput, setEditItemInput] = React.useState('');
+	const [min, setMin] = React.useState('');
+	const [sec, setSec] = React.useState('');
 
-	componentDidMount() {
-		this.dateTimer = setInterval(() => this.updateTimeDistance(), 5000);
-	}
+	let dateTimer;
 
-	componentWillUnmount() {
-		clearInterval(this.dateTimer);
-	}
+	React.useEffect(() => {
+		dateTimer = setInterval(() => updateTimeDistance(), 5000);
+		return () => {
+			clearInterval(dateTimer);
+		};
+	}, [items]);
 
-	onDeleteItem = (id) => {
-		this.setState(({ items }) => {
+	const onDeleteItem = (id) => {
+		setitems((items) => {
+			const { items: item } = items;
+			const newArray = item.filter((item) => item.id !== id);
 			return {
-				items: items.filter((item) => item.id !== id),
-				counter: items.filter((el) => el.status === true).length,
+				items: newArray.filter((item) => item.id !== id),
+				counter: newArray.filter((el) => el.status === true).length,
 			};
 		});
 	};
 
-	onComplete = (id) => {
-		this.setState(({ items }) => {
-			const newArray = [...items];
+	const onComplete = (id) => {
+		setitems((items) => {
+			const { items: item } = items;
+			const newArray = [...item];
 			const index = newArray.findIndex((el) => el.id === id);
 			newArray[index] = { ...newArray[index], status: !newArray[index].status };
 			return {
@@ -48,197 +54,177 @@ class App extends Component {
 		});
 	};
 
-	onClear = () => {
-		this.setState(({ items }) => {
-			return {
-				items: items.filter((el) => el.status !== false),
-			};
+	const onClear = () => {
+		setitems((items) => {
+			return { ...items, items: items.items.filter((el) => el.status !== false) };
 		});
 	};
 
-	onNewTaskChange = (e) => {
-		this.setState({
-			newItemInput: e.target.value,
-		});
+	const onNewTaskChange = (e) => {
+		setNewItemInput(e.target.value);
 	};
 
-	getTimeDistance = (createDate) => {
+	const getTimeDistance = (createDate) => {
 		let result = formatDistanceToNow(createDate, { includeSeconds: true });
 		return result;
 	};
 
-	updateTimeDistance = () => {
-		this.setState(({ items }) => {
-			if (items.length) {
-				let newArray = [...items];
+	const updateTimeDistance = () => {
+		if (items.items.length) {
+			setitems((items) => {
+				const { items: item } = items;
+				let newArray = [...item];
 				newArray.forEach((el) => {
-					el.create = `created ${this.getTimeDistance(el.createDate)} ago`;
+					el.create = `created ${getTimeDistance(el.createDate)} ago`;
 				});
-				return {
-					items: newArray,
-				};
-			}
-		});
+				return { ...items, items: newArray };
+			});
+		}
 	};
 
-	addNewItem = (e) => {
+	const addNewItem = (e) => {
 		e.preventDefault();
-		const text = this.state.newItemInput;
-		const min = this.state.min;
-		const sec = this.state.sec;
-
+		const text = newItemInput;
 		if (text) {
-			this.setState(({ items }) => {
+			setitems((items) => {
+				const { items: item } = items;
 				const newItem = {
 					status: true,
 					checkbox: false,
 					descr: text,
 					min: min,
 					sec: sec,
-					create: `created ${this.getTimeDistance(new Date())} ago`,
+					create: `created ${getTimeDistance(new Date())} ago`,
 					edit: false,
-					id: items.length + 1,
+					id: item.length + 1,
 					createDate: new Date(),
 				};
-				const newData = [...items, newItem];
+				const newData = [...item, newItem];
 				return {
 					items: newData,
 					counter: newData.filter((el) => el.status === true).length,
-					newItemInput: '',
-					min: '',
-					sec: '',
 				};
 			});
+			setNewItemInput('');
+			setMin('');
+			setSec('');
 		}
 	};
 
-	onTabClick = (e) => {
+	const onTabClick = (e) => {
 		const target = e.target;
 		if (target.textContent === 'All') {
-			this.setState(({ tabAll }) => {
+			setTabs((tabs) => {
 				return {
-					tabAll: !tabAll,
+					tabAll: !tabs.tabAll,
 					tabActive: false,
 					tabCompleted: false,
 				};
 			});
 		} else if (target.textContent === 'Active') {
-			this.setState(({ tabActive }) => {
+			setTabs((tabs) => {
 				return {
 					tabAll: false,
-					tabActive: !tabActive,
+					tabActive: !tabs.tabActive,
 					tabCompleted: false,
 				};
 			});
 		} else if (target.textContent === 'Completed') {
-			this.setState(({ tabCompleted }) => {
+			setTabs((tabs) => {
 				return {
 					tabAll: false,
 					tabActive: false,
-					tabCompleted: !tabCompleted,
+					tabCompleted: !tabs.tabCompleted,
 				};
 			});
 		}
 	};
 
-	onEdit = (id) => {
-		this.setState(({ items }) => {
-			const newArray = [...items];
-			const index = items.findIndex((el) => el.id === id);
+	const onEdit = (id) => {
+		setitems((items) => {
+			const { items: item } = items;
+			const newArray = [...item];
+			const index = item.findIndex((el) => el.id === id);
 			newArray[index] = { ...newArray[index], edit: !newArray[index].edit };
-			return {
-				items: newArray,
-			};
+			return { ...items, items: newArray };
 		});
 	};
 
-	onEditChange = (e) => {
-		this.setState({
-			editItemInput: e.target.value,
-		});
+	const onEditChange = (e) => {
+		setEditItemInput(e.target.value);
 	};
 
-	onSubmitEdit = (e, id) => {
+	const onSubmitEdit = (e, id) => {
 		e.preventDefault();
-		this.setState(({ items, editItemInput }) => {
-			const newArray = [...items];
-			const index = items.findIndex((el) => el.id === id);
+		setitems((items) => {
+			const { items: item } = items;
+			const newArray = [...item];
+			const index = item.findIndex((el) => el.id === id);
 			newArray[index] = { ...newArray[index], descr: editItemInput, edit: !newArray[index].edit };
-			return {
-				items: newArray,
-				editItemInput: '',
-			};
+			return { ...items, items: newArray };
 		});
+		setEditItemInput('');
 	};
 
-	onMinuteChange = (e) => {
-		this.setState({
-			min: e.target.value,
-		});
+	const onMinuteChange = (e) => {
+		setMin(e.target.value);
 	};
 
-	onSecChange = (e) => {
-		this.setState({
-			sec: e.target.value,
-		});
+	const onSecChange = (e) => {
+		setSec(e.target.value);
 	};
 
-	onTaskUnmount = (id, min, sec) => {
-		this.setState(({ items }) => {
-			const newArray = [...items];
-			const index = items.findIndex((el) => el.id === id);
+	const onTaskUnmount = (id, min, sec) => {
+		setitems((items) => {
+			const { items: item } = items;
+			const newArray = [...item];
+			const index = item.findIndex((el) => el.id === id);
 			newArray[index] = { ...newArray[index], min: min, sec: sec };
-			return {
-				items: newArray,
-			};
+			return { ...items, items: newArray };
 		});
 	};
 
-	render() {
-		const { items, counter, tabAll, tabActive, tabCompleted, newItemInput, editItemInput, min, sec } = this.state;
-
-		return (
-			<div className="app">
-				<section className="todoapp">
-					<header className="header">
-						<h1>todos</h1>
-						<NewTaskForm
-							addItem={this.addNewItem}
-							newItemInput={newItemInput}
-							onNewTaskChange={this.onNewTaskChange}
-							min={min}
-							sec={sec}
-							onMinuteChange={this.onMinuteChange}
-							onSecChange={this.onSecChange}
-						/>
-					</header>
-					<section className="main">
-						<TaskList
-							items={items}
-							onDeleteItem={this.onDeleteItem}
-							onComplete={this.onComplete}
-							tabAll={tabAll}
-							tabActive={tabActive}
-							tabCompleted={tabCompleted}
-							onEdit={this.onEdit}
-							onSubmitEdit={this.onSubmitEdit}
-							editItemInput={editItemInput}
-							onEditChange={this.onEditChange}
-							onTaskUnmount={this.onTaskUnmount}
-						/>
-						<Footer
-							counter={counter}
-							onTabClick={this.onTabClick}
-							tabAll={tabAll}
-							tabActive={tabActive}
-							tabCompleted={tabCompleted}
-							onClear={this.onClear}
-						/>
-					</section>
+	return (
+		<div className="app">
+			<section className="todoapp">
+				<header className="header">
+					<h1>todos</h1>
+					<NewTaskForm
+						addItem={addNewItem}
+						newItemInput={newItemInput}
+						onNewTaskChange={onNewTaskChange}
+						min={min}
+						sec={sec}
+						onMinuteChange={onMinuteChange}
+						onSecChange={onSecChange}
+					/>
+				</header>
+				<section className="main">
+					<TaskList
+						items={items.items}
+						onDeleteItem={onDeleteItem}
+						onComplete={onComplete}
+						tabAll={tabs.tabAll}
+						tabActive={tabs.tabActive}
+						tabCompleted={tabs.tabCompleted}
+						onEdit={onEdit}
+						onSubmitEdit={onSubmitEdit}
+						editItemInput={editItemInput}
+						onEditChange={onEditChange}
+						onTaskUnmount={onTaskUnmount}
+					/>
+					<Footer
+						counter={items.counter}
+						onTabClick={onTabClick}
+						tabAll={tabs.tabAll}
+						tabActive={tabs.tabActive}
+						tabCompleted={tabs.tabCompleted}
+						onClear={onClear}
+					/>
 				</section>
-			</div>
-		);
-	}
-}
+			</section>
+		</div>
+	);
+};
 
 export default App;
